@@ -7,9 +7,9 @@
 **Tautan Notebook:** [URL Colab/Kaggle]
 
 > **CARA PAKAI TEMPLATE INI**
-> Semua tanda `[...]` dan `<...>` **wajib diisi dari hasil run kelompok sendiri** (`rekap_agregat_smsa.csv`).
+> Semua tanda `[...]` dan `<...>` **wajib diisi dari hasil run kelompok sendiri** (`rekap_agregat_smsa_<kode>.csv`).
 > Jangan menyalin angka contoh dari dokumen mana pun. Angka yang bukan dari run sendiri = temuan palsu.
-> Target panjang: **3–4 halaman**. Struktur halaman mengikuti Bab 9 panduan.md.
+> Target panjang: **3–4 halaman**.
 
 ---
 
@@ -27,7 +27,7 @@ inferensi, memori). Laporan ini mengukur trade-off tersebut secara terkendali.
 3. Konfigurasi mana yang paling direkomendasikan untuk skenario dunia nyata?
 
 ### 1.3 Matriks Eksperimen
-<Salin tabel 27 run dari Bab 4.1 / sel Rancangan notebook. Sebutkan jumlah run yang benar-benar selesai.>
+<Salin tabel 27 run dari sel Rancangan notebook. Sebutkan jumlah run yang benar-benar selesai.>
 
 | ID | Backbone | Strategi | Seed |
 |:---:|:---|:---|:---:|
@@ -49,7 +49,7 @@ inferensi, memori). Laporan ini mengukur trade-off tersebut secara terkendali.
 | Himpunan evaluasi | [validasi resmi SmSA, n=1260] |
 
 ### 1.5 Hipotesis
-- **H1** — [tulis ulang H1 dari Bab 4.3]
+- **H1** — [tulis ulang H1 dari sel Rancangan notebook]
 - **H2** — [tulis ulang H2]
 - **H3** — [tulis ulang H3]
 
@@ -67,7 +67,7 @@ evaluasi memakai himpunan validasi resmi.
 |:---|:---:|:---|
 | Hapus duplikat teks persis | [67] | `drop_duplicates(subset='text')` |
 | Hapus teks berlabel konfliktual | [0] | pada SmSA tidak ditemukan label bertentangan |
-| Hapus kebocoran validasi di data latih | [16] | irisan teks train ∩ valid |
+| Hapus kebocoran validasi di data latih | [14] | irisan teks train ∩ valid |
 | **Hasil akhir train** | **[10919]** | dari [11000] baris mentah |
 
 Distribusi kelas setelah pembersihan: positive [58,4%], negative [31,2%], neutral [10,4%].
@@ -96,7 +96,7 @@ faktor yang sedang diuji.
 ## HALAMAN 3 — Hasil Eksperimen & Analisis Komparatif
 
 ### 3.1 Tabel Utama: Rekap Agregat (Mean ± Std, n = 3 seed)
-<Sisipkan isi `rekap_agregat_smsa.csv`. Format angka: 4 desimal.>
+<Sisipkan isi `rekap_agregat_smsa_<kode>.csv`. Format angka: 4 desimal.>
 
 | Backbone | Strategi | Akurasi | Macro F1 | Waktu Latih (s) | Latensi (ms/kalimat) | Memori Puncak (MB) | Param Dilatih |
 |:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -128,7 +128,7 @@ apakah penghematan itu sebanding dengan penurunan F1. Rujuk angka tabel 3.1.>
 **PR1 — Backbone mana yang paling unggul, dan apakah keunggulannya lebih besar daripada variasi acak antar-seed?**
 <Cara menjawab: tulis F1 macro tiap backbone (mean ± std). Bandingkan selisih mean antar-backbone
 terhadap std antar-seed-nya. Simpulkan secara eksplisit: selisih > std → keunggulan bukan kebetulan seed;
-selisih ≈ std → belum bisa disimpulkan. Rujuk Bab 8 kerangka PR1.>
+selisih ≈ std → belum bisa disimpulkan.>
 
 **PR2 — Seberapa jauh partial freezing dan linear probing tertinggal dari full fine-tuning, dan apakah penghematannya sepadan?**
 <Cara menjawab: Δ F1 tiap strategi vs full, plus Δ waktu latih / memori. Nyatakan pada backbone mana
@@ -157,5 +157,5 @@ kelas neutral minoritas sehingga F1 kelas itu paling tidak stabil.>
 
 ## Lampiran
 - Tautan notebook + PDF hasil Run All (`STUDIO3_Kelompok[X]_[Nama1]_[Nama2].pdf`)
-- `hasil_smsa_lengkap.csv` (log 27 run) dan `rekap_agregat_smsa.csv`
+- `hasil_smsa_lengkap.csv` (log 27 run) dan `rekap_agregat_smsa_<kode>.csv`
 - Pembagian kerja anggota kelompok

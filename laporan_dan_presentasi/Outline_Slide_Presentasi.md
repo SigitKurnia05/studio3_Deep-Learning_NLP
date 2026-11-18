@@ -2,13 +2,13 @@
 ## Fine-Tuning Transformer Pretrained untuk Klasifikasi Sentimen Bahasa Indonesia (SmSA)
 
 **Kelompok:** [X] — [Nama Anggota 1] ([NIM 1]), [Nama Anggota 2] ([NIM 2])
-**Batas:** maksimal **15 slide** (alur mengikuti Bab 10 panduan.md)
+**Batas:** maksimal **15 slide**
 **Format akhir:** `Slide_Presentasi_Kelompok[X].pptx`
 
 > **ATURAN ISI SLIDE**
 > - Slide itu pendamping bicara, bukan dokumen. **Maksimal 5–7 kata per sel tabel**, hindari jargon.
 > - Sasaran penonton: penguji non-RPL → "awam tapi formal".
-> - Setiap angka di slide **wajib** berasal dari `rekap_agregat_smsa.csv` hasil run sendiri.
+> - Setiap angka di slide **wajib** berasal dari `rekap_agregat_smsa_<kode>.csv` hasil run sendiri.
 > - Siapkan 1 slide cadangan (backup, tidak dihitung) untuk pertanyaan tersering penguji.
 
 ---
@@ -18,19 +18,19 @@
 | No. | Judul Slide | Isi Utama | Sumber Data |
 |:---:|:---|:---|:---|
 | **1** | Judul & Anggota Kelompok | Judul Studio 3, nama anggota, NIM, kelas | — |
-| **2** | Latar Belakang & Masalah | Analisis sentimen Indonesia di industri; akurasi tertinggi belum tentu paling layak | Bab 1 panduan |
-| **3** | Backbone yang Dibandingkan | Tabel: IndoBERT vs mBERT vs DistilBERT (kosakata, jumlah parameter, korpus) | Bab 6.1 |
-| **4** | Strategi Fine-Tuning | Diagram: Full vs Partial Freezing vs Linear Probing (mana yang dibekukan) | Bab 6.2 |
+| **2** | Latar Belakang & Masalah | Analisis sentimen Indonesia di industri; akurasi tertinggi belum tentu paling layak | hasil notebook |
+| **3** | Backbone yang Dibandingkan | Tabel: IndoBERT vs mBERT vs DistilBERT (kosakata, jumlah parameter, korpus) | hasil notebook |
+| **4** | Strategi Fine-Tuning | Diagram: Full vs Partial Freezing vs Linear Probing (mana yang dibekukan) | hasil notebook |
 | **5** | Rancangan & Hipotesis | Matriks 27 run, variabel terkunci, H1–H3 | sel Rancangan |
 | **6** | Kurasi & Distribusi Dataset | Diagram 3 tahap pembersihan + grafik ketimpangan kelas | output SEL 4 |
 | **7** | Setup & Reproduksibilitas | GPU T4, protokol seeding, FP16/AMP | output SEL 2 |
-| **8** | Hasil Utama: Performa | Tabel + bar chart Akurasi & Macro F1 (Mean ± Std) | `rekap_agregat_smsa.csv` |
+| **8** | Hasil Utama: Performa | Tabel + bar chart Akurasi & Macro F1 (Mean ± Std) | `rekap_agregat_smsa_<kode>.csv` |
 | **9** | Bukti H1 | Selisih IndoBERT vs mBERT dibandingkan std antar-seed; penjelasan tokenisasi | tabel 3.1 laporan |
-| **10** | Efisiensi Komputasi | Grafik waktu latih & memori puncak per run | `rekap_agregat_smsa.csv` |
+| **10** | Efisiensi Komputasi | Grafik waktu latih & memori puncak per run | `rekap_agregat_smsa_<kode>.csv` |
 | **11** | Efisiensi vs Performa (H3) | Seberapa layak partial freezing & linear probing (Δ F1 vs Δ waktu) | tabel 3.1 laporan |
-| **12** | Trade-off Latensi Real-Time | Scatter Macro F1 vs latensi (ms/kalimat); peran DistilBERT | grafik panel 3 |
-| **13** | Rekomendasi Skenario Industri | 3 skenario → konfigurasi pilihan + alasannya | Bab 8 PR3 |
-| **14** | Analisis Kesalahan | Confusion matrix; kesulitan kelas `neutral` (minoritas) | prediksi run terbaik |
+| **12** | Trade-off Latensi Real-Time | Scatter Macro F1 vs latensi (ms/kalimat); peran DistilBERT | `grafik_3` (latensi benchmark satu sesi) |
+| **13** | Rekomendasi Skenario Industri | 3 skenario → konfigurasi pilihan + alasannya | hasil notebook |
+| **14** | Analisis Kesalahan | Confusion matrix; kesulitan kelas `neutral` (minoritas) | `grafik_5` dan `grafik_6` (confusion matrix) |
 | **15** | Kesimpulan & Q&A | 3 poin penutup + status hipotesis | — |
 | _(B)_ | Cadangan | Jawaban siap pakai: kenapa 128 token? kenapa 3 seed? kenapa macro F1? | — |
 
@@ -38,7 +38,7 @@
 
 ## Persiapan Angka per Slide (isi setelah run selesai)
 
-Ambil dari `rekap_agregat_smsa.csv`, jangan hitung manual:
+Ambil dari `rekap_agregat_smsa_<kode>.csv`, jangan hitung manual:
 
 | Yang dibutuhkan | Kolom di CSV |
 |:---|:---|
