@@ -10,7 +10,7 @@ Repositori ini memuat implementasi, analisis komparatif, dan laporan eksperimen 
 
 ---
 
-## 👥 Tim Penyusun (Kelompok Yolo)
+## 👥 Tim Penyusun (Kelompok 11 - Yolo)
 
 **Program Studi Teknik Informatika — Institut Teknologi Sumatera (ITERA)**
 
@@ -18,6 +18,16 @@ Repositori ini memuat implementasi, analisis komparatif, dan laporan eksperimen 
 |:---|:---:|
 | **Sigit Kurnia Hartawan** | `123140033` |
 | **Muhammad Romadhon Santoso** | `123140031` |
+
+---
+
+## 🔗 Tautan Akses Proyek
+
+| Sumber Daya | Tautan Akses | Keterangan |
+|:---|:---|:---|
+| **Google Drive** | [s.itera.id/Drive_Studio3-NLP_Kelompok11](https://s.itera.id/Drive_Studio3-NLP_Kelompok11) | Direktori output lengkap, log CSV, dan model checkpoint |
+| **Google Colab** | [s.itera.id/Colab_Studio3-NLP_Kelompok11](https://s.itera.id/Colab_Studio3-NLP_Kelompok11) | Notebook interaktif GPU T4 yang siap dieksekusi |
+| **GitHub Repository** | [s.itera.id/Github_Studio3-NLP_Kelompok11](https://s.itera.id/Github_Studio3-NLP_Kelompok11) | Repositori kode sumber, data kurasi, dan dokumentasi |
 
 ---
 
@@ -128,9 +138,7 @@ studio3_Deep-Learning_NLP/
 │   ├── grafik_3_tradeoff_8e43b7.png    # Grafik trade-off F1 vs Latensi inferensi
 │   └── grafik_4_f1_per_kelas_8e43b7.png# Grafik perbandingan F1 per kelas sentimen
 ├── laporan_dan_presentasi/
-│   ├── Laporan_Singkat_Template.md     # Template laporan singkat resmi 4 halaman
-│   ├── Outline_Slide_Presentasi.md     # Rencana alur 15 slide presentasi
-│   └── STUDIO3_KelompokYolo_Sigit_Kurnia_Hartawan_Muhammad_Romadhon_Santoso.pdf # Laporan akhir
+│   └── STUDIO3_KelompokYolo_Sigit_Kurnia_Hartawan_Muhammad_Romadhon_Santoso.pdf # Laporan akhir / dokumen ekspor notebook
 ├── notebooks/
 │   └── Studio_Proyek_3_NLP.ipynb       # Jupyter Notebook lengkap (27 run + visualisasi)
 ├── Spesifikasi_Tugas_Studio_Proyek_3.pdf # Panduan & rubrik tugas Studio 3
