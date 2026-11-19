@@ -27,7 +27,7 @@ Repositori ini memuat implementasi dan hasil eksperimen **Studio Proyek 3 — Pe
 | Sumber Daya | Tautan Akses | Keterangan |
 |:---|:---|:---|
 | **Google Drive** | [s.itera.id/Drive_Studio3-NLP_Kelompok11](https://s.itera.id/Drive_Studio3-NLP_Kelompok11) | Folder output: CSV hasil, grafik, dan model terbaik |
-| **Google Colab** | [s.itera.id/Colab_Studio3-NLP_Kelompok11](https://s.itera.id/Colab_Studio3-NLP_Kelompok11) | Notebook (akses *Anyone with the link can view*) |
+| **Google Colab** | [s.itera.id/ipynb_Studio3-NLP_Kelompok11](https://s.itera.id/ipynb_Studio3-NLP_Kelompok11) | Notebook (akses *Anyone with the link can view*) |
 | **GitHub Repository** | [s.itera.id/Github_Studio3-NLP_Kelompok11](https://s.itera.id/Github_Studio3-NLP_Kelompok11) | Kode, data, dan hasil eksperimen |
 
 ---
