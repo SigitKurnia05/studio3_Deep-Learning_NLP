@@ -1,0 +1,5 @@
+baseline,n_latih,accuracy,f1_macro
+TF-IDF + LogReg (latih penuh),10919,0.77,0.6785987248024886
+TF-IDF + LogReg (subset 5000),5000,0.742,0.6248842217357753
+Tebakan acak berstrata,5000,0.372,0.3053769227285283
+Kelas mayoritas,5000,0.416,0.19585687382297554

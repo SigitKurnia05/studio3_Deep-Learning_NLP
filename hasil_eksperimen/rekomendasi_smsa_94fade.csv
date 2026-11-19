@@ -1,0 +1,4 @@
+skenario,konfigurasi,F1 makro ± SD,selisih dari terbaik (poin),waktu latih (s),memori (MB),latensi (ms)
+A. akurasi utama,IndoBERT + Full FT,0.8942 ± 0.0130,0.0,111.8,2998,8.51
+B. anggaran latih terbatas,IndoBERT + Partial freezing,0.8901 ± 0.0074,0.41,61.9,1614,8.51
+C. inferensi cepat,IndoBERT + Full FT,0.8942 ± 0.0130,0.0,111.8,2998,8.51

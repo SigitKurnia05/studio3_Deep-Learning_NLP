@@ -1,0 +1,18 @@
+pengujian,nilai terukur,status
+H1 indobert vs mbert,"selisih +12.11 poin, std maks 1.30, p=0.0005",TERDUKUNG
+H1 indobert vs distilmbert,"selisih +14.40 poin, std maks 1.30, p=0.0002",TERDUKUNG
+H2 hemat waktu latih >=35%,42.8%,TERDUKUNG
+H2 hemat latensi >=35% (satu sesi),48.4% (8.35 -> 4.31 ms),TERDUKUNG
+H2 penurunan F1 <=3 poin,2.29 poin,TERDUKUNG
+H3 indobert hierarki full>=partial>probing,0.8942 / 0.8901 / 0.7826,TERDUKUNG
+H3 indobert partial>=96% F1 full,99.5%,TERDUKUNG
+H3 indobert hemat waktu >=40%,44.6%,TERDUKUNG
+H3 indobert hemat memori >=40%,46.2%,TERDUKUNG
+H3 mbert hierarki full>=partial>probing,0.7730 / 0.7055 / 0.4527,TERDUKUNG
+H3 mbert partial>=96% F1 full,91.3%,TIDAK TERDUKUNG
+H3 mbert hemat waktu >=40%,45.1%,TERDUKUNG
+H3 mbert hemat memori >=40%,49.6%,TERDUKUNG
+H3 distilmbert hierarki full>=partial>probing,0.7501 / 0.6668 / 0.5231,TERDUKUNG
+H3 distilmbert partial>=96% F1 full,88.9%,TIDAK TERDUKUNG
+H3 distilmbert hemat waktu >=40%,54.4%,TERDUKUNG
+H3 distilmbert hemat memori >=40%,55.1%,TERDUKUNG

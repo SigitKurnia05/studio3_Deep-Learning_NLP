@@ -1,12 +1,13 @@
 # Studio Proyek 3: Fine-Tuning Transformer Pretrained untuk Klasifikasi Sentimen Bahasa Indonesia (SmSA)
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C.svg)](https://pytorch.org/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg)](https://pytorch.org/)
 [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97-Transformers-yellow.svg)](https://huggingface.co/)
-[![Dataset](https://img.shields.io/badge/Dataset-SmSA%20(IndoNLU)-green.svg)](https://github.com/indo-nlp/indonlu)
-[![License](https://img.shields.io/badge/License-Academic-lightgrey.svg)]()
+[![Dataset](https://img.shields.io/badge/Dataset-SmSA%20(IndoNLU)-green.svg)](https://github.com/indobenchmark/indonlu)
 
-Repositori ini memuat implementasi, analisis komparatif, dan laporan eksperimen untuk **Studio Proyek 3 — Pembelajaran Mendalam (IF25-40401)**. Proyek ini membandingkan kinerja dan efisiensi komputasi dari 3 *backbone* model bahasa berbasis Transformer (*monolingual* vs *multilingual*) di bawah 3 strategi *fine-tuning* pada dataset klasifikasi sentimen Bahasa Indonesia (**SmSA - IndoNLU**).
+Repositori ini memuat implementasi dan hasil eksperimen **Studio Proyek 3 — Pembelajaran Mendalam (IF25-40401)**: perbandingan
+3 *backbone* Transformer (monolingual Indonesia vs multilingual) di bawah 3 strategi *fine-tuning* pada dataset sentimen Bahasa Indonesia
+**SmSA (IndoNLU)**, untuk merekomendasikan kombinasi yang paling sesuai dengan anggaran komputasi, kecepatan inferensi, dan keterjelasan.
 
 ---
 
@@ -25,100 +26,93 @@ Repositori ini memuat implementasi, analisis komparatif, dan laporan eksperimen 
 
 | Sumber Daya | Tautan Akses | Keterangan |
 |:---|:---|:---|
-| **Google Drive** | [s.itera.id/Drive_Studio3-NLP_Kelompok11](https://s.itera.id/Drive_Studio3-NLP_Kelompok11) | Direktori output lengkap, log CSV, dan model checkpoint |
-| **Google Colab** | [s.itera.id/Colab_Studio3-NLP_Kelompok11](https://s.itera.id/Colab_Studio3-NLP_Kelompok11) | Notebook interaktif GPU T4 yang siap dieksekusi |
-| **GitHub Repository** | [s.itera.id/Github_Studio3-NLP_Kelompok11](https://s.itera.id/Github_Studio3-NLP_Kelompok11) | Repositori kode sumber, data kurasi, dan dokumentasi |
+| **Google Drive** | [s.itera.id/Drive_Studio3-NLP_Kelompok11](https://s.itera.id/Drive_Studio3-NLP_Kelompok11) | Folder output: CSV hasil, grafik, dan model terbaik |
+| **Google Colab** | [s.itera.id/Colab_Studio3-NLP_Kelompok11](https://s.itera.id/Colab_Studio3-NLP_Kelompok11) | Notebook (akses *Anyone with the link can view*) |
+| **GitHub Repository** | [s.itera.id/Github_Studio3-NLP_Kelompok11](https://s.itera.id/Github_Studio3-NLP_Kelompok11) | Kode, data, dan hasil eksperimen |
 
 ---
 
-## 📌 Latar Belakang & Masalah
+## ❓ Tiga Pertanyaan Riset Wajib
 
-Model Transformer berukuran besar sering kali menghasilkan akurasi tinggi pada tugas NLP, namun membutuhkan biaya komputasi yang masif (waktu pelatihan, konsumsi memori GPU, dan latensi inferensi). Pada skenario nyata di industri (analisis ulasan *e-commerce*, *brand sentiment monitoring*, sistem tiket *customer support*), performa model harus selalu dikompromikan dengan efisiensi operasional.
+1. **Q1:** Backbone mana yang memberi *trade-off* akurasi-vs-efisiensi terbaik untuk klasifikasi sentimen ini?
+2. **Q2:** Apakah strategi hemat komputasi (*linear probing* / *partial freezing*) cukup kompetitif dibanding *full fine-tuning*?
+3. **Q3:** Kombinasi apa yang direkomendasikan, dan mengapa?
 
-Proyek ini menjawab 3 pertanyaan riset utama:
-1. **Keunggulan Domain Bahasa:** Sejauh mana model *monolingual* Bahasa Indonesia (`IndoBERT`) mengungguli model *multilingual* (`mBERT`, `DistilmBERT`), dan apakah perbedaannya melampaui variasi acak antar-seed?
-2. **Efisiensi Model Kompresi:** Apakah `DistilmBERT` mampu memberikan penghematan komputasi yang signifikan (≥ 35%) dengan penurunan performa yang dapat ditoleransi (≤ 3 poin F1)?
-3. **Strategi Pembekuan Lapisan (*Layer Freezing*):** Seberapa kompetitif strategi *Partial Freezing* dan *Linear Probing* dibandingkan *Full Fine-Tuning* dalam memangkas waktu latih dan konsumsi VRAM?
+Jawaban lengkap beserta tabel buktinya ada di bagian 15 notebook.
 
 ---
 
 ## 🔬 Desain Eksperimen
 
-Eksperimen dirancang secara terkendali menggunakan **Matriks 27 Run** (3 Model × 3 Strategi × 3 Random Seed):
+Matriks **27 run** = 3 backbone × 3 strategi × 3 seed.
 
-### 1. Model Backbone
-- **`indobenchmark/indobert-base-p1`** (Monolingual Indonesia, 12 layer, ~124.4M parameter)
-- **`bert-base-multilingual-cased`** (Multilingual 104 bahasa, 12 layer, ~177.9M parameter)
-- **`distilbert-base-multilingual-cased`** (Distilled multilingual, 6 layer, ~135.3M parameter)
+### Backbone
+- **`indobenchmark/indobert-base-p1`**: monolingual Indonesia, 12 lapis
+- **`bert-base-multilingual-cased`**: multilingual, 12 lapis
+- **`distilbert-base-multilingual-cased`**: multilingual hasil distilasi, 6 lapis
 
-### 2. Strategi Fine-Tuning
-- **Full Fine-Tuning:** Seluruh bobot *backbone* dan *classification head* dilatih (100% parameter *trainable*).
-- **Partial Freezing:** *Embedding* dan separuh lapisan awal dibekukan (6 layer pertama pada BERT; 3 layer pertama pada DistilBERT).
-- **Linear Probing:** Seluruh lapisan *backbone* dibekukan 100%, hanya bobot *classification head* yang dilatih.
+### Strategi Fine-Tuning
+- **Full fine-tuning:** seluruh parameter dilatih (baseline).
+- **Partial freezing:** embedding dan separuh lapis awal dibekukan (6 lapis pada BERT, 3 lapis pada DistilBERT).
+- **Linear probing:** seluruh backbone dibekukan, hanya head klasifikasi yang dilatih.
 
-### 3. Variabel Terkendali & Hiperparameter
-| Hiperparameter | Nilai | Keterangan |
-|:---|:---|:---|
-| **Max Sequence Length** | `128` token | Mencakup mayoritas kalimat ulasan SmSA |
-| **Batch Size** | `32` | Diseragamkan pada seluruh run |
-| **Epochs** | `4` epoch | Tetap (tanpa early stopping) |
-| **Optimizer** | `AdamW` (`weight_decay = 0.01`) | Standar fine-tuning Transformer |
-| **Learning Rate** | `3e-5` (Full & Partial) / `1e-3` (Linear Probing) | Linear warmup (rasio 0.1) + Linear decay |
-| **Presisi Komputasi** | FP16 (Automatic Mixed Precision / AMP) | Efisiensi komputasi pada GPU T4 |
-| **Variasi Seed** | `42`, `123`, `2024` | Untuk mengukur *mean ± std* |
-| **Dataset Evaluasi** | `valid_preprocess.tsv` (1.260 baris) | Pembagian resmi IndoNLU |
+Semua run memakai *head replacement* (head baru 3 kelas).
 
----
+### Pembagian Data
+| Himpunan | Sumber | Jumlah | Peran |
+|:---|:---|:---:|:---|
+| Latih | subset berstrata dari `train_preprocess.tsv` yang sudah dibersihkan | 5.000 | melatih model (sama untuk semua run) |
+| Validasi | `valid_preprocess.tsv` resmi | 1.260 | **hanya** memilih epoch terbaik |
+| Uji | `test_preprocess.tsv` resmi | 500 | disentuh **sekali** per run; semua metrik dilaporkan di sini |
 
-## 🧹 Pembersihan & Pra-pemrosesan Data (SmSA)
+Pembersihan data latih: label konflik → duplikat persis → kebocoran ke validasi/uji (0 konflik, 67 duplikat, 14 bocor; 10.919 baris bersih
+sebelum diambil subset).
 
-Dataset SmSA memiliki 3 label sentimen: `positive`, `negative`, dan `neutral`. Protokol pembersihan dilakukan secara ketat untuk mencegah kebocoran data (*data leakage*):
-1. **Deteksi Label Bertentangan:** Memeriksa teks identik dengan label berbeda (ditemukan `0` konflik).
-2. **Deduplikasi Teks Persis:** Membuang `67` baris duplikat identik pada data latih.
-3. **Pembersihan Kebocoran Validasi:** Membuang `14` baris data latih yang memiliki teks identik dengan himpunan validasi.
-4. **Hasil Akhir:** Data latih bersih berjumlah **10.919 baris** (dari 11.000 baris mentah).
+### Variabel Terkendali
+| Hiperparameter | Nilai |
+|:---|:---|
+| Max sequence length | 128 token |
+| Batch size | 32 |
+| Epoch | maksimum 4, epoch terbaik dipilih dari F1 makro validasi |
+| Optimizer | AdamW (`weight_decay = 0.01`), warmup linear 10% lalu linear decay |
+| Learning rate | 3e-5 (full & partial), 3e-3 (linear probing) |
+| Presisi | FP16 (AMP) |
+| Seed | 42, 123, 2024 |
+| Latensi inferensi | batch = 1, 300 kalimat, FP32, ketiga backbone diukur dalam satu sesi |
 
-> **Catatan Metrik:** Karena distribusi kelas tidak seimbang (`positive` 58.4%, `negative` 31.2%, `neutral` 10.4%), **Macro F1-Score** dijadikan metrik evaluasi primer, bukan akurasi.
-
----
-
-## 📊 Hasil Eksperimen & Analisis
-
-Berikut adalah ringkasan hasil agregat (*Mean ± Std* dari 3 seed independen):
-
-| Backbone | Strategi | Akurasi | Macro F1 | F1 Neutral | Waktu Latih (s) | Latensi (ms/kalimat) | Peak GPU Mem (MB) | Parameter Dilatih |
-|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **IndoBERT** | **Full** | **0.9407 ± 0.0048** | **0.9167 ± 0.0042** | **0.8594 ± 0.0030** | 217.16 ± 1.65 | 8.77 ± 1.62 | 3257.96 ± 3.34 | 124.4M (100%) |
-| IndoBERT | Partial | 0.9349 ± 0.0008 | 0.9085 ± 0.0014 | 0.8477 ± 0.0043 | 121.80 ± 0.34 | 8.18 ± 1.16 | 1750.08 ± 2.11 | 43.1M (34.7%) |
-| IndoBERT | Probing | 0.8865 ± 0.0016 | 0.8495 ± 0.0022 | 0.7742 ± 0.0066 | 55.29 ± 0.06 | 8.54 ± 1.55 | 582.23 ± 0.00 | 2.3K (0.002%) |
-| **mBERT** | Full | 0.9148 ± 0.0091 | 0.8822 ± 0.0132 | 0.8110 ± 0.0235 | 287.71 ± 0.40 | 8.11 ± 0.83 | 3878.14 ± 15.59 | 177.9M (100%) |
-| mBERT | Partial | 0.8841 ± 0.0060 | 0.8431 ± 0.0037 | 0.7574 ± 0.0046 | 147.77 ± 0.17 | 7.77 ± 0.28 | 1949.82 ± 4.13 | 43.1M (24.2%) |
-| mBERT | Probing | 0.7519 ± 0.0012 | 0.6362 ± 0.0004 | 0.4093 ± 0.0069 | 69.89 ± 0.09 | 9.52 ± 0.75 | 786.23 ± 0.00 | 2.3K (0.001%) |
-| **DistilmBERT** | Full | 0.9130 ± 0.0053 | 0.8767 ± 0.0031 | 0.7945 ± 0.0040 | 166.52 ± 0.25 | **4.65 ± 0.76** | 2618.73 ± 9.47 | 135.3M (100%) |
-| DistilmBERT | Partial | 0.8669 ± 0.0017 | 0.8172 ± 0.0024 | 0.7095 ± 0.0135 | 72.54 ± 0.07 | 4.46 ± 0.99 | 1181.68 ± 5.78 | 21.9M (16.2%) |
-| DistilmBERT | Probing | 0.8140 ± 0.0045 | 0.7529 ± 0.0055 | 0.6374 ± 0.0094 | **36.37 ± 0.16** | 4.40 ± 0.50 | **622.46 ± 0.00** | 592.9K (0.44%) |
-
-### 📈 Evaluasi Hipotesis Penelitian
-
-| Hipotesis | Pengujian & Klaim | Bukti Empiris | Status |
-|:---:|:---|:---|:---:|
-| **H1** | IndoBERT Full Fine-Tuning mengungguli mBERT & DistilmBERT secara signifikan | Selisih F1 vs mBERT: **+3.45 poin** ($p=0.0360$)<br>Selisih F1 vs DistilmBERT: **+4.00 poin** ($p=0.0003$) | **TERDUKUNG** |
-| **H2** | DistilmBERT menghemat waktu latih & latensi $\ge 35\%$ vs mBERT dengan penurunan F1 $\le 3$ poin | Hemat waktu latih: **42.1%**<br>Hemat latensi inferensi: **42.6%**<br>Penurunan F1: hanya **0.55 poin** | **TERDUKUNG** |
-| **H3** | Hierarki performa: Full $\ge$ Partial > Probing; Partial mempertahankan $\ge 96\%$ performa Full dengan penghematan biaya $\ge 40\%$ | Hierarki terbukti pada seluruh model.<br>Pada IndoBERT: Partial mencapai **99.1%** performa Full, hemat waktu **43.9%**, hemat memori **46.3%**. | **TERDUKUNG BERSYARAT**<br>*(Terpenuhi penuh di IndoBERT, mBERT & DistilmBERT di bawah 96%)* |
+### Pembanding
+Baseline TF-IDF + regresi logistik, tebakan acak (F1 makro ≈ 0,33), dan simpangan baku antar-seed. Metrik utama adalah **F1 makro**
+karena kelas *neutral* minoritas di data latih (~10%) tetapi porsinya ~18% di data uji.
 
 ---
 
-## 💡 Rekomendasi Penerapan di Industri
+## 📊 Hasil Eksperimen
 
-1. **Skenario Server / Akurasi Tertinggi (*High-Stakes Sentiment*):**
-   - **Rekomendasi:** `IndoBERT Full Fine-Tuning`
-   - **Alasan:** Macro F1 tertinggi (**91.67%**) dan F1 kelas neutral terbaik (**85.94%**), sangat cocok jika akurasi adalah prioritas mutlak.
-2. **Skenario Pelatihan Berulang / Anggaran Terbatas (*Green AI / Fast Retraining*):**
-   - **Rekomendasi:** `IndoBERT Partial Freezing`
-   - **Alasan:** Mempertahankan 99.1% performa *full fine-tuning* (F1 **90.85%**) dengan waktu latih **43.9% lebih cepat** dan konsumsi memori GPU **46.3% lebih hemat**.
-3. **Skenario Real-Time / Edge Deployment (*Low Latency Streaming*):**
-   - **Rekomendasi:** `DistilmBERT Full Fine-Tuning`
-   - **Alasan:** Latensi inferensi terpangkas hingga **4.65 ms/kalimat** (hampir 2× lipat lebih responsif dari BERT standar) dengan Macro F1 yang tetap kompetitif (**87.67%**).
+Rata-rata ± simpangan baku 3 seed pada **data uji resmi** (kode konfigurasi `94fade`, satu sesi Colab, Tesla T4).
+Latensi diukur pada benchmark satu sesi dan hanya bergantung pada arsitektur backbone.
+
+| Backbone | Strategi | F1 makro | Akurasi | Waktu latih (s) | Memori puncak (MB) | Latensi (ms/kalimat) | Parameter dilatih |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **IndoBERT** | **Full** | **0,8942 ± 0,0130** | **0,9193 ± 0,0061** | 111,8 | 2.998 | 8,51 ± 1,17 | 124,4 jt (100%) |
+| IndoBERT | Partial | 0,8901 ± 0,0074 | 0,9167 ± 0,0050 | 61,9 | 1.614 | 8,51 ± 1,17 | 43,1 jt (34,7%) |
+| IndoBERT | Probing | 0,7826 ± 0,0060 | 0,8247 ± 0,0070 | 28,9 | 601 | 8,51 ± 1,17 | 2.307 |
+| mBERT | Full | 0,7730 ± 0,0081 | 0,8100 ± 0,0122 | 144,1 | 3.886 | 8,35 ± 0,86 | 177,9 jt (100%) |
+| mBERT | Partial | 0,7055 ± 0,0138 | 0,7333 ± 0,0130 | 79,2 | 1.958 | 8,35 ± 0,86 | 43,1 jt (24,2%) |
+| mBERT | Probing | 0,4527 ± 0,0056 | 0,5353 ± 0,0064 | 37,4 | 828 | 8,35 ± 0,86 | 2.307 |
+| DistilmBERT | Full | 0,7501 ± 0,0121 | 0,7827 ± 0,0151 | 82,4 | 2.627 | 4,31 ± 0,67 | 135,3 jt (100%) |
+| DistilmBERT | Partial | 0,6668 ± 0,0180 | 0,6907 ± 0,0200 | 37,6 | 1.181 | 4,31 ± 0,67 | 21,9 jt (16,2%) |
+| DistilmBERT | Probing | 0,5231 ± 0,0026 | 0,5780 ± 0,0060 | 19,0 | 672 | 4,31 ± 0,67 | 592.899 |
+
+Pembanding: baseline TF-IDF + regresi logistik (data latih penuh) F1 makro **0,6786**, dan tebakan acak berstrata **0,3054**.
+
+**Ringkasan temuan**
+- **H1 terdukung:** IndoBERT unggul +12,11 poin atas mBERT dan +14,40 poin atas DistilmBERT, jauh di atas simpangan antar-seed (≤ 1,30 poin).
+- **H2 terdukung:** DistilmBERT menghemat waktu latih 42,8% dan latensi 48,4% terhadap mBERT, dengan penurunan F1 2,29 poin.
+- **H3 hanya terdukung pada IndoBERT:** partial freezing mempertahankan 99,5% F1 full pada IndoBERT, tetapi hanya 91,3% (mBERT) dan 88,9% (DistilmBERT).
+- **Rekomendasi:** **IndoBERT + partial freezing**. F1-nya belum beda dari full fine-tuning (selisih 0,41 < SD 1,30 poin), dengan waktu latih
+  44,6% lebih singkat dan memori GPU 46,2% lebih kecil.
+
+Pembahasan lengkap, pemeriksaan kewajaran, dan jawaban Q1–Q3 ada di bagian 14–15 notebook.
 
 ---
 
@@ -127,50 +121,36 @@ Berikut adalah ringkasan hasil agregat (*Mean ± Std* dari 3 seed independen):
 ```text
 studio3_Deep-Learning_NLP/
 ├── data/
-│   ├── train_preprocess.tsv       # Dataset latih resmi SmSA (IndoNLU)
-│   └── valid_preprocess.tsv       # Dataset validasi resmi SmSA (IndoNLU)
-├── hasil_eksperimen/
-│   ├── evaluasi_hipotesis_8e43b7.csv   # Hasil uji statistik hipotesis H1, H2, H3
-│   ├── rekap_agregat_smsa_8e43b7.csv   # Rekap mean ± std 27 run (9 kombinasi)
-│   ├── hasil_smsa_8e43b7.csv           # Log mentah setiap run
-│   ├── grafik_1_akurasi_8e43b7.png     # Grafik perbandingan akurasi & Macro F1
-│   ├── grafik_2_biaya_8e43b7.png       # Grafik waktu latih & memori puncak
-│   ├── grafik_3_tradeoff_8e43b7.png    # Grafik trade-off F1 vs Latensi inferensi
-│   └── grafik_4_f1_per_kelas_8e43b7.png# Grafik perbandingan F1 per kelas sentimen
-├── laporan_dan_presentasi/
-│   └── STUDIO3_KelompokYolo_Sigit_Kurnia_Hartawan_Muhammad_Romadhon_Santoso.pdf # Laporan akhir / dokumen ekspor notebook
+│   ├── train_preprocess.tsv        # data latih resmi SmSA (IndoNLU)
+│   ├── valid_preprocess.tsv        # data validasi resmi
+│   └── test_preprocess.tsv         # data uji resmi (500 kalimat)
+├── hasil_eksperimen/               # salinan berkas keluaran notebook (CSV dan grafik, berkode konfigurasi)
+├── laporan_dan_presentasi/         # PDF notebook: STUDIO3_Kelompok11_<Anggota1>_<Anggota2>.pdf
 ├── notebooks/
-│   └── Studio_Proyek_3_NLP.ipynb       # Jupyter Notebook lengkap (27 run + visualisasi)
-├── Spesifikasi_Tugas_Studio_Proyek_3.pdf # Panduan & rubrik tugas Studio 3
-└── README.md                           # Dokumentasi utama proyek
+│   └── Studio_Proyek_3_NLP.ipynb   # notebook lengkap (27 run, analisis, visualisasi)
+├── Spesifikasi_Tugas_Studio_Proyek_3.pdf
+├── Soal_Studi_Kasus_Studio_Proyek_3.pdf
+└── README.md
 ```
 
 ---
 
-## 🚀 Panduan Menjalankan Eksperimen
+## 🚀 Menjalankan Eksperimen
 
-### 1. Prasyarat Lingkungan
-Pastikan Anda menggunakan Python 3.8+ dengan GPU (disarankan GPU NVIDIA dengan CUDA, minimal 8 GB VRAM seperti NVIDIA T4 di Colab).
+Buka [`notebooks/Studio_Proyek_3_NLP.ipynb`](notebooks/Studio_Proyek_3_NLP.ipynb) di Google Colab dengan GPU T4. Data diunduh otomatis,
+dan seluruh keluaran disimpan ke `MyDrive/Studio3_NLP/output/` agar dapat dilanjutkan bila sesi terputus.
 
-Pasang dependensi yang dibutuhkan:
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-pip install transformers scikit-learn pandas numpy matplotlib seaborn scipy
-```
-
-### 2. Menjalankan Notebook
-Buka dan jalankan berkas [`Studio_Proyek_3_NLP.ipynb`](notebooks/Studio_Proyek_3_NLP.ipynb) melalui **Google Colab** atau **Jupyter Lab**:
-- **Smoke Mode (`MODE = "smoke"`):** Digunakan untuk verifikasi cepat alur kode (1 seed, 1 epoch, subset data kecil).
-- **Full Mode (`MODE = "full"`):** Menjalankan matriks penuh 27 run (3 model × 3 strategi × 3 seed × 4 epoch) dan menghasilkan rekapitulasi berkas CSV serta visualisasi grafik otomatis.
+- **`MODE = "smoke"`**: uji cepat alur kode (subset kecil, 1 seed, 1 epoch) ke folder terpisah.
+- **`MODE = "full"`**: matriks penuh 27 run beserta rekap, grafik, evaluasi hipotesis, dan tabel bukti Q1–Q3.
 
 ---
 
 ## 📚 Referensi
 
-1. **IndoNLU / SmSA:** Wilie, B., et al. (2020). *IndoNLU: Benchmark and Resources for Evaluating Indonesian Natural Language Understanding*. Proceedings of AACL-IJCNLP 2020.
-2. **IndoBERT:** Koto, F., Rahimi, A., Lau, J. H., & Baldwin, T. (2020). *IndoLEM and IndoBERT: A Benchmark Dataset and Pre-trained Language Model for Indonesian NLP*. COLING 2020.
-3. **mBERT:** Devlin, J., Chang, M. W., Lee, K., & Toutanova, K. (2019). *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding*. NAACL-HLT 2019.
-4. **DistilBERT:** Sanh, V., Debut, L., Chaumond, J., & Wolf, T. (2019). *DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter*. NeurIPS EMC^2 Workshop.
+1. Wilie, B., dkk. (2020). *IndoNLU: Benchmark and Resources for Evaluating Indonesian Natural Language Understanding*. AACL-IJCNLP 2020.
+   (sumber dataset SmSA dan model `indobenchmark/indobert-base-p1`)
+2. Devlin, J., Chang, M.-W., Lee, K., & Toutanova, K. (2019). *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding*. NAACL-HLT 2019.
+3. Sanh, V., Debut, L., Chaumond, J., & Wolf, T. (2019). *DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter*. NeurIPS EMC² Workshop.
 
 ---
 *Dikembangkan untuk pemenuhan tugas akademik Studio Proyek 3 — Pembelajaran Mendalam, Teknik Informatika ITERA.*
