@@ -153,6 +153,8 @@ studio3_Deep-Learning_NLP/
 │   ├── rekomendasi_smsa_94fade.csv     # ringkasan rekomendasi skenario A, B, C
 │   └── subset_latih_smsa_94fade.csv    # 5.000 sampel data latih yang digunakan
 ├── laporan_dan_presentasi/
+│   ├── Laporan Singkat Studio  3_Kelompok YOLO.pdf # laporan analisis singkat eksperimen (format ringkas)
+│   ├── Presentasi Studio 3-Eksperimen-FineTuning-Transformer-untuk-SmSA.pdf # berkas slide presentasi studio proyek 3
 │   └── STUDIO3_Kelompok11_Sigit_Kurnia_Hartawan_Muhammad_Romadhon_Santoso.pdf # ekspor PDF notebook lengkap (42 halaman)
 ├── notebooks/
 │   └── Studio_Proyek_3_NLP.ipynb       # notebook utama eksperimen (27 run, PyTorch & Transformers)
